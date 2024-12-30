@@ -1,0 +1,1 @@
+from losses.data_losses import LpLoss, PINNLoss

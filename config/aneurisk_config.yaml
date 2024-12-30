@@ -1,0 +1,69 @@
+default: &DEFAULT
+
+  #General
+  # For computing compression
+  n_params_baseline: None #If None, will be computed
+  verbose: True
+  arch: 'fno4d' # model architecture in ['fno4d', 'srcnn', 'edsr']
+  debug: False
+  save_dir: None # directory to save checkpoints in
+
+  srcnn:
+    data_channels: 3 # number of input channels (have to match the dataset)
+    out_channels: 3 # number of output channels (have to match the dataset)
+
+  edsr:
+    data_channels: 3 # number of input channels (have to match the dataset)
+    out_channels: 3 # number of output channels (have to match the dataset)
+
+  fno4d:
+    data_channels: 3 # number of input channels (have to match the dataset)
+    out_channels: 3 # number of output channels (have to match the dataset)
+    n_modes: 4 # number of fourier modes used in each dimension
+    hidden_channels: 32 # number of hidden channels for fourier layers
+    projection_channels: 128 # number of hidden channels in the projectino layer
+    n_layers: 4 # number of fourier layers
+    super_resolution_layer: 'edsr'
+    n_super_resolution_layers: 1
+    implicit: True
+    domain_agnostic: True
+
+  # Optimizer
+  opt:
+    n_epochs: 500 # number of training epochs
+    learning_rate: 1e-3
+    training_loss: 'l2' # training loss used (only 'l2' implemented)
+    weight_decay: 1e-4
+
+    scheduler_T_max: 500 # For cosine only, typically take n_epochs
+    scheduler_patience: 5 # For ReduceLROnPlateau only
+    scheduler: 'StepLR' # Or 'CosineAnnealingLR' OR 'ReduceLROnPlateau'
+    step_size: 100
+    gamma: 0.5
+
+  # Dataset related
+  data:
+    folder: data/    # together with name and dataset resolution RES should point at dataset
+    name: 'aneurisk' # in this: data/aneurisk_RES/dataset.pt
+    batch_size: 16   # batch size for training
+    train_test_split: 0.9
+    train_resolution: 32 # grid resolution used during training
+    test_resolutions: [32] # grid resolutions used during testing
+    test_batch_sizes: [16] # batch size for testing
+    geometric_prior_mode: 1 # different options for incorporating geometric_prior in [0, 1, 2, 3]
+    geometric_prior: 'eig' # geometric prior to be used
+    super_resolution_rate: 2 # subsampling rate for input
+    super_resolution_dim: 'space' # dimension along which to subsample in ['space', 'time']
+    n_t: 1 # Number of time steps per sample (samples are split into separate samples of equal length in time)
+    noise: False # whether to add noise to the input
+
+  # Weights and biases options
+  wandb:
+    log: True # whether to log the run with wandb
+    name: None # If None, config will be used, but you can override it here
+    group: '' 
+    project: "deepflow"
+    entity: "WANDB_USESRNAME" # put your username here
+    sweep: False
+    log_output: True # whether to send prediction samples to wandb
+    eval_interval: 1
