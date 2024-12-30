@@ -17,11 +17,11 @@ See [example scripts](https://github.com/moritz-halter/deepflow/scripts)
 
 Preprocessing should be done in this order:
 
-1. [Grid](####-grid)
-2. [Surface](####-surface)
-3. [Geometric prior](####-geometric-prior)
-4. [Resample](####-resample)
-5. [Compile](####-compile)
+1. [Grid](#grid)
+2. [Surface](#surface)
+3. [Geometric prior](#geometric-prior)
+4. [Resample](#resample)
+5. [Compile](#compile)
 
 #### Grid
 
