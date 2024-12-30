@@ -198,7 +198,8 @@ trainer.train(
     regularizer=False,
     training_loss=train_loss,
     eval_losses=eval_losses,
-    save_best=f'{config.data.test_resolutions[0]}_l2',
+    save_best=None,
+    save_every=10,
     save_dir=save_dir
 )
 

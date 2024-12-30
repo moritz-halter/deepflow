@@ -35,17 +35,23 @@ def get_surface_data(name: str, geometries_dir: Path):
     eigenvectors = vtk_to_numpy(output.GetPointData().GetArray('eigenvectors'))
     normals = vtk_to_numpy(output.GetPointData().GetArray('Normals'))
     wss = vtk_to_numpy(output.GetPointData().GetArray('wallShearStress'))
-    return points[::1, :], normals[::1, :], eigenvectors[::1, :], wss[::1, :], u[::1, :]
+    mean_curvature = vtk_to_numpy(output.GetPointData().GetArray('Mean_Curvature'))
+    return points[::1, :], normals[::1, :], eigenvectors[::1, :], wss[::1, :], u[::1, :], mean_curvature[::1]
 
 
 def get_run_data(run_dir: Path, resolution: int):
     sample_filter = [0, 2, 3, 4, 5, 6, 7, 8]
     data = np.load(run_dir.joinpath('pred.npz'))
-    prediction = data[f'pred_{resolution}'][sample_filter, ...]
-    coords = data[f'coords_{resolution}'][sample_filter, ...]
+    if 'truth_32' in data.keys():
+        prediction = data[f'pred_32'][sample_filter, ...]
+        coords = data[f'coords_32'][sample_filter, ...]
+        truth = data[f'truth_32']
+    else:
+        prediction = data[f'pred_{resolution}'][sample_filter, ...]
+        coords = data[f'coords_{resolution}'][sample_filter, ...]
+        truth = data[f'truth_{resolution}']
     if coords.shape[-1] == 3:
         coords = np.permute_dims(coords, (0, 5, 1, 2, 3, 4))
-    truth = data[f'truth_{resolution}']
     truth = truth[sample_filter, ...]
     sampling_rate = prediction.shape[2] // resolution
     return (down_sample(coords, sampling_rate),

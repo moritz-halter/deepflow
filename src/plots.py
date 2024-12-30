@@ -96,15 +96,44 @@ def gather_samples_data(geometries_dir: Path, sample_names):
     eigenvectors = []
     surface_wss = []
     surface_u = []
+    surface_mc = []
     for sample_name in sample_names:
-        sp, sn, eig, wss, u = get_surface_data(sample_name,
-                                               geometries_dir)
+        sp, sn, eig, wss, u, mc = get_surface_data(sample_name,
+                                                   geometries_dir)
         surface_points.append(sp)
         surface_normals.append(sn)
         eigenvectors.append(eig)
         surface_wss.append(wss)
         surface_u.append(u)
-    return surface_points, surface_normals, eigenvectors, surface_wss, surface_u
+        surface_mc.append(mc)
+    return surface_points, surface_normals, eigenvectors, surface_wss, surface_u, surface_mc
+
+def mc_plot(mean_curvature: np.ndarray, points: np.ndarray,
+            save_path: Path = None):
+    s = 50
+    label_size=20
+    print(np.min(mean_curvature), np.max(mean_curvature))
+    mean_curvature_500 = np.clip(mean_curvature, -2500, 2500)
+    fig = plt.figure(figsize=(30, 10))
+    ax = fig.add_subplot(121, projection='3d')
+    ax.view_init(elev=-90, azim=0, roll=-30)
+    ax.set_axis_off()
+    im = ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=mean_curvature, cmap='coolwarm', s=s)
+    cbar = fig.colorbar(im)
+    cbar.ax.tick_params(labelsize=label_size)
+    ax = fig.add_subplot(122, projection='3d')
+    ax.view_init(elev=-90, azim=0, roll=-30)
+    ax.set_axis_off()
+    im = ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=mean_curvature_500, cmap='coolwarm', s=s)
+    cbar = fig.colorbar(im)
+    cbar.ax.tick_params(labelsize=label_size)
+    if save_path is not None:
+        plt.savefig(save_path.joinpath('mc_sdf.png'),
+                    transparent=True,
+                    dpi='figure',
+                    format='png')
+    else:
+        plt.show()
 
 def eigenvectors_plot(eigenvectors: np.ndarray, points: np.ndarray,
                       s: int = 1, colormap: str = 'coolwarm',
@@ -258,10 +287,10 @@ def create_flow_plot(ds_file: Path, save_dir: Union[Path, None] = None):
     azim = 0
     roll = -30
 
-    s = 1500
+    s = 30
     colormap = 'coolwarm'
 
-    fig = plt.figure(figsize=(150,100))
+    fig = plt.figure(figsize=(30,20))
     ax = fig.add_subplot(231, projection='3d')
     ax.scatter(coords_flat[0, :], coords_flat[1, :], coords_flat[2, :], c=u_flat[0, :], s=s, cmap=colormap, norm=norm)
     ax.set_axis_off()
@@ -283,10 +312,14 @@ def create_flow_plot(ds_file: Path, save_dir: Union[Path, None] = None):
     ax.set_axis_off()
     ax.view_init(elev=elev, azim=azim, roll=roll)
     ax = fig.add_subplot(236, projection='3d')
+    pos = ax.scatter(coords_flat[0, :], coords_flat[1, :], coords_flat[2, :], c=u_noise_flat[2, :], s=s, cmap=colormap, norm=norm)
     ax.set_axis_off()
     ax.view_init(elev=elev, azim=azim, roll=roll)
-    # cbar_ax = fig.add_axes((0.95, 0.25, 0.025, 0.5))
-    # fig.colorbar(pos, cax=cbar_ax)
+    cbar_ax = fig.add_axes((0.95, 0.25, 0.025, 0.5))
+    cbar_ax.set_axis_on()
+    fontsize = 20
+    cbar_ax.tick_params(labelsize=fontsize)
+    fig.colorbar(pos, cax=cbar_ax)
     fig.subplots_adjust(hspace=-0.4,
                         wspace=-0.2)
     if save_dir is not None:
@@ -335,7 +368,7 @@ def create_p_v_t_plot(samples_dir: Path, save_dir: Union[Path, None] = None):
 
 def create_comparison_plot(task_dir: Path, geometries_dir: Path, runs: List[str], sample_names: List[str], save_dir: Union[Path, None] = None):
 
-    surface_points, surface_normals, eigenvectors, surface_wss, surface_u = gather_samples_data(geometries_dir, sample_names)
+    surface_points, surface_normals, eigenvectors, surface_wss, surface_u, _ = gather_samples_data(geometries_dir, sample_names)
 
     truth = []
     prediction = []

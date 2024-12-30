@@ -9,7 +9,7 @@ from algebra.metrics import lp_diff, angular_error, wall_shear_stress
 from algebra.util import get_grid_basis
 from file_io import get_sample_data, get_run_data
 from plots import eigenvectors_plot, flow_plot, create_flow_plot, create_p_v_t_plot, create_comparison_plot, \
-    surface_mesh_plot, surface_plot, wall_shear_stress_plot, gather_samples_data, create_mse_plots
+    surface_mesh_plot, surface_plot, wall_shear_stress_plot, gather_samples_data, create_mse_plots, mc_plot
 
 SAMPLE_IDX = 6
 ELEV = -90
@@ -17,16 +17,18 @@ AZIM = 0
 ROLL = 30
 
 
-def process_run(points, predictions, truth, model: str, sample_names: List[str], save_path: Union[str, Path] = None, additional_plots: bool = False):
+def process_run(points, predictions, truth, model: str, sample_names: List[str], geo_dir: Path, save_path: Union[str, Path] = None, additional_plots: bool = False):
 
-    surface_points, surface_normals, eigenvectors, surface_wss, surface_u = gather_samples_data(sample_names=sample_names, geometries_dir=geometries_dir)
+    surface_points, surface_normals, eigenvectors, surface_wss, surface_u, surface_mc = gather_samples_data(sample_names=sample_names, geometries_dir=geo_dir)
 
     grid_basis, spacing = get_grid_basis(points, with_spacing=True)
 
     mse = lp_diff(predictions, truth)
 
     ae = angular_error(predictions, truth)
+
     if additional_plots:
+        mc_plot(surface_mc[SAMPLE_IDX], surface_points[SAMPLE_IDX], save_path=save_path)
         create_mse_plots(mse, save_path=save_path)
         grid_points, grid_eigenvectors, grid_u = get_sample_data('C0069')
         # on surface mesh points
@@ -87,7 +89,7 @@ def process_run(points, predictions, truth, model: str, sample_names: List[str],
             'mean_wss_diff_dist': np.mean([np.mean(diff) for diff in wss_diff_dist])}
 
 
-def main(samples: List[str], r_dir: Path, model_names: List[str], save_path: Union[Path, None] = None, refresh: bool = False):
+def main(samples: List[str], r_dir: Path, model_names: List[str], geo_dir: Path, save_path: Union[Path, None] = None, refresh: bool = False):
 
     for task in model_names:
         print('Task:', task)
@@ -106,9 +108,10 @@ def main(samples: List[str], r_dir: Path, model_names: List[str], save_path: Uni
             if run.name != 'evaluation':
                 print('Run:', run.name)
                 additional_plots = False  # run.name == 'EXAMPLE_RUN_NAME'
-                curr = process_run(*get_run_data(run, 32),
+                curr = process_run(*get_run_data(run, 24),
                                    model=run.name,
                                    sample_names=samples,
+                                   geo_dir=geo_dir,
                                    additional_plots=additional_plots,
                                    save_path=save_path)
                 match = next(iter(i for i, e in enumerate(evaluations) if curr['model'] == e['model']), None)
@@ -117,7 +120,7 @@ def main(samples: List[str], r_dir: Path, model_names: List[str], save_path: Uni
                 else:
                     evaluations.append(curr)
 
-                if len(evaluations) > 0:
+                if len(evaluations) > 0 and (match is None or refresh):
                     print(f'saving {len(evaluations)} evaluations')
                     csv_keys = list(evaluations[0].keys())
                     with open(csv_file, 'w', newline='') as f:
@@ -131,14 +134,14 @@ if __name__ == '__main__':
     tasks = ['space_noise_free_3'] # different training scenarios
     runs = ['idafno_edsr_eig_1', 'ifno_edsr', 'edsr', 'srcnn', 'linear'] # five methods to compare
     sample_names = ['C0045', 'C0048', 'C0020_1', 'C0056', 'C0043', 'C0079', 'C0069', 'C0080_1'] # samples to include in order (should be the evaluation samples in the right order)
-    images_dir = Path('PATH/TO/IMAGE/DIRECTORY') # SET PATH HERE
-    geometries_dir = Path('PATH/TO/GEOMETRY/DIRECTORY') # SET PATH HERE
-    runs_dir = Path('PATH/TO/BASE/CHECKPOINT/DIRECTORY') # SET PATH HERE
-    main(samples=sample_names, model_names=tasks, r_dir=runs_dir, save_path=images_dir)
+    images_dir = Path('/home/moritz/Desktop/deepflow/images') # SET PATH HERE
+    geometries_dir = Path('/home/moritz/Documents/preprocessing/data/geometries') # SET PATH HERE
+    runs_dir = Path('/home/moritz/Desktop/deepflow/runs') # SET PATH HERE
+    main(samples=sample_names, model_names=tasks, r_dir=runs_dir, geo_dir=geometries_dir, save_path=images_dir)
+    create_flow_plot(ds_file=Path('/home/moritz/Desktop/deepflow/data/aneurisk_32/dataset.pt'), # SET PATH HERE
+                     save_dir=images_dir)
     create_p_v_t_plot(samples_dir=Path('PATH/TO/SAMPLES/DIRECTORY'), # SET PATH HERE
                       save_dir=images_dir)
-    create_flow_plot(ds_file=Path('PATH/TO/dataset.pt'), # SET PATH HERE
-                     save_dir=images_dir)
     create_comparison_plot(task_dir=Path('PATH/TO/TASK/DIRECTORY'), # SET PATH HERE
                            save_dir=images_dir,
                            sample_names=sample_names,
