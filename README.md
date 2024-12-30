@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-See [example scripts](https://github.com/moritz-halter/blob/master/deepflow/scripts)
+See [example scripts](https://github.com/moritz-halter/deepflow/blob/master/scripts)
 
 ### Preprocessing
 
@@ -25,7 +25,7 @@ Preprocessing should be done in this order:
 
 #### Grid
 
-To create a grid with to resample the dataset [create_mesh.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/create_mesh.py) can be used:
+To create a grid with to resample the dataset [create_mesh.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/create_mesh.py) can be used:
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/create_mesh.py --help
 usage: create_mesh.py [-h] [-r RESOLUTION] [-t {BOX,SPHRERE,CYLINDER}] -s
@@ -44,7 +44,7 @@ options:
 
 #### Surface
 
-[extract_surface.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/extract_surface.py) can be used to extract the surface patch, defined by a saved state (.psvm) produced by [paraview](https://www.paraview.org) where the region of interest was seperated from the rest with a spherical clip function.
+[extract_surface.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/extract_surface.py) can be used to extract the surface patch, defined by a saved state (.psvm) produced by [paraview](https://www.paraview.org) where the region of interest was seperated from the rest with a spherical clip function.
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/extract_surface.py --help
 usage: extract_surface.py [-h] -s SOURCE_PATH -p PARAMETER_PATH -o OUTPUT_PATH
@@ -63,7 +63,7 @@ options:
 
 #### Geometric prior
 
-To generate the geometric priors use [geometric_priors.py](https://github.com/moritz-halter/blob/master/deepflow/scipts/geometric_priors.py).
+To generate the geometric priors use [geometric_priors.py](https://github.com/moritz-halter/deepflow/blob/master/scipts/geometric_priors.py).
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/geometric_priors.py --help
 usage: geometric_priors.py [-h] -s SURFACE_PATH -o OUTPUT_PATH
@@ -80,7 +80,7 @@ options:
 
 #### Resample
 
-To resample the data on a grid imposed on the region of interes use [create_samples.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/create_samples.py).
+To resample the data on a grid imposed on the region of interes use [create_samples.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/create_samples.py).
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/create_samples.py --help
 usage: create_samples.py [-h] -s SOURCE_PATH -g GEOMETRY_PATH -p PARAMETER_PATH -o OUTPUT_PATH [-m MESH_PATH] [-t0 T_START] [-t1 T_END]
@@ -107,7 +107,7 @@ options:
 
 #### Compile
 
-To compile the dataset use [create_dataset.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/create_samples.py).
+To compile the dataset use [create_dataset.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/create_samples.py).
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/create_dataset.py --help
 usage: create_dataset.py [-h] -r RESOLUTION -o OUTPUT_PATH
@@ -124,7 +124,7 @@ options:
 
 ### Training
 
-For training the [super_resolution.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/super_resolution.py) can be used.
+For training the [super_resolution.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/super_resolution.py) can be used.
 
 ```shell
 [deepflow]$ PYTHONPATH=src python scripts/super_resolution.py --help
@@ -201,15 +201,15 @@ options:
   --config_file CONFIG_FILE
 ```
 
-parameters can be set from the command line or in the [config file](https://github.com/moritz-halter/blob/master/deepflow/config/aneurisk_config.yaml), where their purpose is described in more details.
+parameters can be set from the command line or in the [config file](https://github.com/moritz-halter/deepflow/blob/master/config/aneurisk_config.yaml), where their purpose is described in more details.
 
 
 ### Interpolation
 
-The scripts (create_interpolation.py)[https://github.com/moritz-halter/blob/master/deepflow/scripts/create_interpolation.py] and [run_interpolation.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation.py)/[run_interpolation_time.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation_time.py) can be used to created an interpolated dataset or just a prediction for the evaluation set of a different run for later evaluation respectively.
+The scripts (create_interpolation.py)[https://github.com/moritz-halter/deepflow/blob/master/scripts/create_interpolation.py] and [run_interpolation.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation.py)/[run_interpolation_time.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation_time.py) can be used to created an interpolated dataset or just a prediction for the evaluation set of a different run for later evaluation respectively.
 The relevant parameters have to be set in the scripts itself.
 
 ### Evaluation
 
-To evaluate and create relevant plots for completed runs [eval_and_plot.py](https://github.com/moritz-halter/blob/master/deepflow/scripts/eval_and_plot.py) can be used.
+To evaluate and create relevant plots for completed runs [eval_and_plot.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/eval_and_plot.py) can be used.
 The script parameters have to be set in the script itself.
