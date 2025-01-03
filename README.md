@@ -206,7 +206,7 @@ parameters can be set from the command line or in the [config file](https://gith
 
 ### Interpolation
 
-The scripts (create_interpolation.py)[https://github.com/moritz-halter/deepflow/blob/master/scripts/create_interpolation.py] and [run_interpolation.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation.py)/[run_interpolation_time.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation_time.py) can be used to created an interpolated dataset or just a prediction for the evaluation set of a different run for later evaluation respectively.
+The scripts [create_interpolation.py](https://github.com/moritz-halter/deepflow/blob/master/scripts/create_interpolation.py) and [run_interpolation.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation.py)/[run_interpolation_time.py](https://github.com/moritz-halter/deepflow/scripts/run_interpolation_time.py) can be used to created an interpolated dataset or just a prediction for the evaluation set of a different run for later evaluation respectively.
 The relevant parameters have to be set in the scripts itself.
 
 ### Evaluation
