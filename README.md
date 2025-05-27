@@ -2,6 +2,8 @@
 
 ## Hyperparameters
 
+Model Parameters used in experiments.
+
 ### EDSR Layer
 
 | Parameter | Value |
@@ -26,7 +28,9 @@
 | Layers        |       2/2 |
 | Channels      |   256/128 |
 
-## Abblation
+## Ablation
+
+Ablation study for the different hyperparameters in the fourier layer.
 
 | Layers | Hidden Channels | Fourier Modes | *L*    |
 | ------:| ---------------:| -------------:| ------:|
