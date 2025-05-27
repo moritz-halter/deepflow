@@ -1,4 +1,46 @@
-# Fourier Neural Operator with Laplacian Eigenvectors for Hemodynamic Parameter Upsampling in Aneurysm MRI
+# Localized Fourier Neural Operator for Spatiotemporal Hemodynamic Upsampling in Aneurysm MRI
+
+## Hyperparameters
+
+Model Parameters used in experiments.
+
+### EDSR Layer
+
+| Parameter | Value |
+| --------------- | -----:|
+| Hidden Channels |     4 |
+| Residual Blocks |     1 |
+| Kernel Size     | 3x3x3 |
+
+### Fourier Layer
+
+| Parameter | Value |
+| ------------- | -----:|
+| Layers        |     4 |
+| Fourier Modes | 4x4x4 |
+| Channels      |    32 |
+| Implicit      |  True |
+
+### Lifting/Projection Layer
+
+| Parameter     | Value L/P |
+| ------------- | ---------:|
+| Layers        |       2/2 |
+| Channels      |   256/128 |
+
+## Ablation
+
+Ablation study for the different hyperparameters in the fourier layer.
+
+| Layers | Hidden Channels | Fourier Modes | *L*    |
+| ------:| ---------------:| -------------:| ------:|
+|      2 |              16 |             4 | 0.0416 |
+|      4 |              16 |             4 | 0.0413 |
+|      6 |              16 |             4 | 0.0415 |
+|      2 |              16 |             2 | 0.0417 |
+|      2 |              16 |             6 | 0.0475 |
+|      2 |              32 |             4 | 0.0410 |
+|      2 |              64 |             4 | 0.0514 |
 
 ## Installation
 
