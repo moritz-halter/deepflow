@@ -1,4 +1,4 @@
-# Fourier Neural Operator with Laplacian Eigenvectors for Hemodynamic Parameter Upsampling in Aneurysm MRI
+# Localized Fourier Neural Operator for Spatiotemporal Hemodynamic Upsampling in Aneurysm MRI
 
 ## Hyperparameters
 
